@@ -6,6 +6,7 @@ import { ThemeProvider } from '@/components/theme/theme-provider'
 
 const roboto = Roboto({
   variable: '--font-roboto',
+  subsets: ['latin'],
   weight: ['100', '300', '400', '500', '700'],
 })
 

@@ -6,7 +6,7 @@ import { eq } from 'drizzle-orm'
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { userId } = getAuth(req)
@@ -17,10 +17,16 @@ export async function PATCH(
     const body = await req.json()
     const { foodName, mealType, calories, notes } = body
 
+    const { id } = await params
+
+    if (!id) {
+      return new NextResponse('ID parameter is missing', { status: 400 })
+    }
+
     await db
       .update(foodLogs)
       .set({ foodName, mealType, calories, notes })
-      .where(eq(foodLogs.id, Number(params.id)))
+      .where(eq(foodLogs.id, Number(id)))
 
     return new NextResponse('OK', { status: 200 })
   } catch (error) {

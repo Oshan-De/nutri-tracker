@@ -6,7 +6,7 @@ import { eq, and } from 'drizzle-orm'
 
 export async function DELETE(
   req: NextRequest,
-  context: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { userId } = getAuth(req)
@@ -14,7 +14,7 @@ export async function DELETE(
       return new NextResponse('Unauthorized', { status: 401 })
     }
 
-    const { id } = await context.params
+    const { id } = await params
 
     if (!id) {
       return new NextResponse('ID parameter is missing', { status: 400 })

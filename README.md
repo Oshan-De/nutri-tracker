@@ -1,36 +1,116 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Nutri Tracker
 
-## Getting Started
+A multi-user calorie tracking application designed with cutting-edge technologies to deliver seamless user experience and innovative AI-powered dietary suggestions.
 
-First, run the development server:
+## Features
+
+- **Multi-user authentication** with Clerk.
+- **Dashboard** displaying an overview of user data and trends.
+- **Meal log system** for adding, editing, and deleting meals.
+- **AI integration** for personalized dietary suggestions.
+- **Responsive UI/UX** with animations and modern design.
+
+## Tech Stack
+
+- **Framework:** Next.js (Latest v15), React (Latest v19)
+- **Styling:** Tailwind CSS, ShadCN
+- **State Management:** Zustand
+- **Database:** Vercel Postgres (connected via Drizzle ORM)
+- **Authentication:** Clerk
+- **Animations:** Framer Motion
+- **Type Checking:** TypeScript
+- **Deployment:** Vercel Neon
+- **AI Integration:** MistralAI
+
+## Project Setup
+
+### Prerequisites
+
+Ensure you have the following installed:
+
+- Node.js (>= 14.x)
+- npm or yarn
+- ngrok (for local Clerk webhooks)
+
+### Clone the Repository
+
+```bash
+git clone https://github.com/Oshan-De/nutri-tracker.git
+cd nutri-tracker
+```
+
+### Install Dependencies
+
+```bash
+npm install
+# or
+yarn install
+```
+
+### Configure Environment Variables
+
+Create a `.env.local` file in the root directory and add the following keys:
+
+```env
+APP_ENV=development
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+POSTGRES_URL=your-vercel-postgres-url
+
+MISTRAL_API_KEY=your-mistral-api-key
+
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your-clerk-publishable-key
+CLERK_SECRET_KEY=your-clerk-secret-key
+CLERK_SIGNING_SECRET=your-clerk-signing-secret
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+NEXT_PUBLIC_CLERK_SIGN_IN_FORCE_REDIRECT_URL=/dashboard
+NEXT_PUBLIC_CLERK_SIGN_UP_FORCE_REDIRECT_URL=/dashboard
+```
+
+> **Note:** Replace placeholders with actual values. Refer to the [Clerk Documentation](https://clerk.dev/docs), [Vercel Postgres Setup Guide](https://vercel.com/docs/storage/vercel-postgres), and [MistralAI Documentation](https://mistralai.com/docs) for details.
+
+### Start ngrok for Clerk Webhooks
+
+Clerk requires a public URL for webhooks. Use ngrok to expose your local development server:
+
+```bash
+ngrok http 3000
+```
+
+Update your Clerk webhook settings with the ngrok URL. Refer to the [Clerk Webhook Setup Documentation](https://clerk.dev/docs) for guidance.
+
+To temporarily stop Clerk webhooks, you can disable them in the Clerk dashboard.
+
+### Run the Application
+
+Start the development server:
 
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Access the application at `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Deployment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This project is deployed using Vercel Neon:
 
-## Learn More
+- **Database:** Vercel Postgres
+- **Frontend and Backend:** Deployed to Vercel
 
-To learn more about Next.js, take a look at the following resources:
+Follow the [Vercel Deployment Guide](https://vercel.com/docs) to deploy your own instance.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Contributing
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Contributions are welcome! Feel free to submit a pull request or open an issue in the [GitHub repository](https://github.com/Oshan-De/nutri-tracker/).
 
-## Deploy on Vercel
+## License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+This project is licensed under the MIT License. See the LICENSE file for details.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+For any questions or support, please contact the project maintainers through the GitHub repository.

@@ -1,28 +1,23 @@
 'use client'
 
-import { useUser } from '@clerk/nextjs'
-import { redirect, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { AddMealForm } from '@/components/forms/add-meal-form'
+import { Card } from '@/components/ui/card'
 
-function AddMealPage() {
+export default function AddMeal() {
   const router = useRouter()
-  const { user, isLoaded } = useUser()
-
-  if (isLoaded && !user) {
-    redirect('/sign-in')
-  }
 
   return (
-    <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-      <h1 className="text-2xl font-bold">Add Meal</h1>
-      <div className="max-w-2xl">
-        <AddMealForm
-          onSuccess={() => router.push('/logs')}
-          onCancel={() => router.push('/logs')}
-        />
+    <div className="flex flex-1 flex-col gap-4 p-4 pl-8">
+      <div className="w-fit">
+        <Card className="p-6 md:min-w-[600px] md:w-[600px] overflow-hidden">
+          <h2 className="text-lg font-semibold mb-4">Nutrition Goals</h2>
+          <AddMealForm
+            onSuccess={() => router.push('/dietary-logs')}
+            onCancel={() => router.push('/dashboard')}
+          />
+        </Card>
       </div>
     </div>
   )
 }
-
-export default AddMealPage

@@ -1,80 +1,109 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { useState } from 'react'
-
-interface NutrientData {
-  name: string
-  value: number
-  color: string
-}
+import { memo } from 'react'
+import { Bar, BarChart, XAxis, CartesianGrid } from 'recharts'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
 
 interface NutrientBreakdownChartProps {
-  data: NutrientData[]
+  data?: {
+    name: string
+    value: number
+  }[]
 }
 
-export function NutrientBreakdownChart({ data }: NutrientBreakdownChartProps) {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
-  const total = data.reduce((acc, curr) => acc + curr.value, 0)
+const chartConfig: ChartConfig = {
+  nutrients: {
+    label: 'Nutrients',
+  },
+  protein: {
+    label: 'Protein',
+    color: 'hsl(var(--primary))',
+  },
+  carbs: {
+    label: 'Carbohydrates',
+    color: 'hsl(var(--primary))',
+  },
+  fat: {
+    label: 'Fat',
+    color: 'hsl(var(--primary))',
+  },
+}
 
-  let startAngle = 0
-  const segments = data.map((item) => {
-    const percentage = (item.value / total) * 100
-    const angle = (percentage / 100) * 360
-    const endAngle = startAngle + angle
-    const largeArcFlag = angle > 180 ? 1 : 0
+export function NutrientBreakdownChart({
+  data = [],
+}: NutrientBreakdownChartProps) {
+  const total = data.reduce((sum, item) => sum + item.value, 0) || 0
 
-    // Calculate coordinates for the path
-    const startX = 50 + 40 * Math.cos((startAngle * Math.PI) / 180)
-    const startY = 50 + 40 * Math.sin((startAngle * Math.PI) / 180)
-    const endX = 50 + 40 * Math.cos((endAngle * Math.PI) / 180)
-    const endY = 50 + 40 * Math.sin((endAngle * Math.PI) / 180)
-
-    const segment = {
-      ...item,
-      path: `M 50 50 L ${startX} ${startY} A 40 40 0 ${largeArcFlag} 1 ${endX} ${endY} Z`,
-      percentage,
-      startAngle,
-    }
-
-    startAngle = endAngle
-    return segment
-  })
+  const chartData = data.map((item) => ({
+    name: item.name,
+    value: item.value,
+    percentage: total > 0 ? Math.round((item.value / total) * 100) : 0,
+    fill: `hsl(var(--primary))`,
+  }))
 
   return (
-    <div className="relative h-full w-full">
-      <svg viewBox="0 0 100 100" className="h-full w-full">
-        {segments.map((segment, index) => (
-          <motion.path
-            key={segment.name}
-            d={segment.path}
-            fill={segment.color}
-            initial={{ opacity: 0 }}
-            animate={{
-              opacity:
-                hoveredIndex === null || hoveredIndex === index ? 1 : 0.5,
-            }}
-            onHoverStart={() => setHoveredIndex(index)}
-            onHoverEnd={() => setHoveredIndex(null)}
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.2 }}
-          />
-        ))}
-      </svg>
-
-      <div className="absolute bottom-0 flex w-full justify-center gap-4">
-        {segments.map((segment) => (
-          <div key={segment.name} className="flex items-center gap-2">
-            <div
-              className="h-3 w-3 rounded-full"
-              style={{ backgroundColor: segment.color }}
-            />
-            <span className="text-xs">
-              {segment.name} ({Math.round(segment.percentage)}%)
-            </span>
+    <Card className="w-full">
+      <CardHeader>
+        <CardTitle className="text-xl font-semibold">
+          Nutrient Breakdown
+        </CardTitle>
+        <CardDescription className="text-base font-light text-gray-400">
+          Distribution of macronutrients
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        {chartData.length > 0 ? (
+          <ChartContainer config={chartConfig}>
+            <BarChart accessibilityLayer data={chartData}>
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="name"
+                tickLine={false}
+                tickMargin={10}
+                axisLine={false}
+                tickFormatter={(value) => value.slice(0, 3)}
+              />
+              <ChartTooltip
+                cursor={false}
+                content={<ChartTooltipContent hideLabel />}
+              />
+              <Bar dataKey="value" fill="hsl(var(--primary))" radius={8} />
+            </BarChart>
+          </ChartContainer>
+        ) : (
+          <p className="text-center text-muted-foreground">No data available</p>
+        )}
+        {chartData.length > 0 && (
+          <div className="mt-4 grid grid-cols-3 gap-4 text-center">
+            {chartData.map((item) => (
+              <div key={item.name} className="flex gap-2 flex-col items-center">
+                <div
+                  className="h-3 w-3 rounded-full"
+                  style={{ backgroundColor: item.fill }}
+                ></div>
+                <div className="flex flex-col items-center">
+                  <p className="text-sm font-medium">{item.name}</p>
+                  <p className="text-sm text-muted-foreground">{item.value}g</p>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-    </div>
+        )}
+      </CardContent>
+    </Card>
   )
 }
+
+export default memo(NutrientBreakdownChart)

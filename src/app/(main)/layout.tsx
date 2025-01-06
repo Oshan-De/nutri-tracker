@@ -3,22 +3,27 @@
 import { AppSidebar } from '@/components/app-sidebar'
 import Header from '@/components/header'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
-import { useState } from 'react'
+import { memo } from 'react'
+import { useAuthRedirect } from '@/hooks/use-auth-redirect'
+import { StoreProvider } from '@/providers/store-provider'
+import { StoreErrorBoundary } from '@/components/store-error-boundary'
 
-export default function MainLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
-  const [open, setOpen] = useState(true)
+function MainLayout({ children }: { children: React.ReactNode }) {
+  useAuthRedirect()
 
   return (
-    <SidebarProvider open={open} onOpenChange={setOpen}>
-      <AppSidebar />
-      <SidebarInset>
-        <Header />
-        {children}
-      </SidebarInset>
-    </SidebarProvider>
+    <StoreProvider>
+      <StoreErrorBoundary>
+        <SidebarProvider defaultOpen suppressHydrationWarning>
+          <AppSidebar />
+          <SidebarInset>
+            <Header />
+            {children}
+          </SidebarInset>
+        </SidebarProvider>
+      </StoreErrorBoundary>
+    </StoreProvider>
   )
 }
+
+export default memo(MainLayout)

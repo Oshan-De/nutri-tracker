@@ -10,25 +10,26 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
+import { Trash } from 'lucide-react'
 
 interface DeleteLogDialogProps {
   onConfirm: () => void
-  foodName: string
+  mealName: string
 }
 
-export function DeleteLogDialog({ onConfirm, foodName }: DeleteLogDialogProps) {
+export function DeleteLogDialog({ onConfirm, mealName }: DeleteLogDialogProps) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="ghost" size="sm">
-          Delete
+        <Button variant="ghost" size="icon">
+          <Trash />
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Delete Food Log</AlertDialogTitle>
+          <AlertDialogTitle>Delete Meal Log</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete &quot;{foodName}&quot;? This action
+            Are you sure you want to delete &quot;{mealName}&quot;? This action
             cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>

@@ -1,7 +1,7 @@
 'use client'
 
 import Logo from '@/components/logos/logo'
-import { ThemeToggler } from '@/components/theme/theme-toggler'
+import { ThemeToggler } from '@/components/theme-toggler'
 import { AuroraBackground } from '@/components/ui/aurora-background'
 import { Button } from '@/components/ui/button'
 import {

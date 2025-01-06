@@ -1,65 +1,118 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import { memo } from 'react'
+import {
+  Label,
+  PolarGrid,
+  PolarRadiusAxis,
+  RadialBar,
+  RadialBarChart,
+} from 'recharts'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { ChartConfig, ChartContainer } from '@/components/ui/chart'
+import { calculateStartEndAngles } from '@/lib/utils'
 
 interface CalorieRingChartProps {
   consumed: number
   goal: number
 }
 
-export function CalorieRingChart({ consumed, goal }: CalorieRingChartProps) {
-  const [percentage, setPercentage] = useState(0)
-  const radius = 50
-  const strokeWidth = 10
-  const normalizedRadius = radius - strokeWidth / 2
-  const circumference = normalizedRadius * 2 * Math.PI
-  const strokeDashoffset = circumference - (percentage / 100) * circumference
+const chartConfig: ChartConfig = {
+  calories: {
+    label: 'Calories',
+    color: 'hsl(var(--primary))',
+  },
+}
 
-  useEffect(() => {
-    const newPercentage = Math.min((consumed / goal) * 100, 100)
-    setPercentage(newPercentage)
-  }, [consumed, goal])
+export function CalorieRingChart({ consumed, goal }: CalorieRingChartProps) {
+  const percentage = Math.round((consumed / goal) * 100)
+  const remaining = Math.max(0, goal - consumed)
+
+  const { startAngle, endAngle } = calculateStartEndAngles(0, goal, consumed)
+
+  const chartData = [
+    { name: 'Consumed', calories: consumed, fill: 'var(--color-calories)' },
+  ]
 
   return (
-    <div className="relative flex items-center justify-center">
-      <svg height={radius * 2} width={radius * 2}>
-        {/* Background ring */}
-        <circle
-          stroke="currentColor"
-          fill="transparent"
-          strokeWidth={strokeWidth}
-          r={normalizedRadius}
-          cx={radius}
-          cy={radius}
-          className="text-muted-foreground/20"
-        />
-        {/* Progress ring */}
-        <motion.circle
-          stroke="currentColor"
-          fill="transparent"
-          strokeWidth={strokeWidth}
-          strokeLinecap="round"
-          r={normalizedRadius}
-          cx={radius}
-          cy={radius}
-          className="text-primary"
-          style={{
-            strokeDasharray: circumference,
-            strokeDashoffset,
-            transformOrigin: '50% 50%',
-          }}
-          initial={{ strokeDashoffset: circumference }}
-          animate={{ strokeDashoffset }}
-          transition={{ duration: 1, ease: 'easeInOut' }}
-        />
-      </svg>
-      <div className="absolute flex flex-col items-center justify-center text-center">
-        <span className="text-2xl font-bold">{Math.round(percentage)}%</span>
-        <span className="text-xs text-muted-foreground">
-          {consumed} / {goal}
-        </span>
-      </div>
-    </div>
+    <Card className="w-full h-full">
+      <CardHeader className="pb-4">
+        <CardTitle className="text-xl font-semibold -mb-2">
+          Calorie Intake
+        </CardTitle>
+        <CardDescription className="text-base font-light text-gray-400">
+          Daily calorie consumption
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <ChartContainer
+          config={chartConfig}
+          className="mx-auto w-full h-[230px]"
+        >
+          <RadialBarChart
+            data={chartData}
+            startAngle={endAngle}
+            endAngle={startAngle}
+            innerRadius={95}
+            outerRadius={145}
+          >
+            <PolarGrid
+              gridType="circle"
+              radialLines={false}
+              stroke="none"
+              className="first:fill-muted last:fill-background"
+              polarRadius={[105, 86]}
+            />
+            <RadialBar dataKey="calories" background cornerRadius={30} />
+            <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
+              <Label
+                content={({ viewBox }) => {
+                  if (viewBox && 'cx' in viewBox && 'cy' in viewBox) {
+                    return (
+                      <text
+                        x={viewBox.cx}
+                        y={viewBox.cy}
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                      >
+                        <tspan
+                          x={viewBox.cx}
+                          y={viewBox.cy ? viewBox.cy - 20 : 20}
+                          className="fill-foreground text-4xl font-bold"
+                        >
+                          {percentage}%
+                        </tspan>
+                        <tspan
+                          x={viewBox.cx}
+                          y={viewBox.cy ? viewBox.cy + 10 : 10}
+                          className="fill-primary text-base"
+                        >
+                          {consumed} / {goal} kcal
+                        </tspan>
+                        <tspan
+                          x={viewBox.cx}
+                          y={viewBox.cy ? viewBox.cy + 30 : 30}
+                          className="fill-muted-foreground text-xs"
+                        >
+                          {remaining} kcal remaining
+                        </tspan>
+                      </text>
+                    )
+                  }
+                }}
+              />
+            </PolarRadiusAxis>
+          </RadialBarChart>
+        </ChartContainer>
+      </CardContent>
+    </Card>
   )
 }
+
+export default memo(CalorieRingChart)

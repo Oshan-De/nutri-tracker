@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { Bot, SquareTerminal } from 'lucide-react'
+import { Logs, LayoutDashboard } from 'lucide-react'
 
 import { NavMain } from '@/components/nav-main'
 import {
@@ -12,8 +12,8 @@ import {
   SidebarRail,
   useSidebar,
 } from '@/components/ui/sidebar'
-import Logo from './logos/logo'
-import LogoIcon from './logos/logo-icon'
+import Logo from '@/components/logos/logo'
+import LogoIcon from '@/components/logos/logo-icon'
 import { AnimatePresence, motion } from 'framer-motion'
 
 const data = {
@@ -21,13 +21,13 @@ const data = {
     {
       title: 'Dashboard',
       url: '/dashboard',
-      icon: SquareTerminal,
+      icon: LayoutDashboard,
       isActive: true,
     },
     {
-      title: 'logs',
-      url: '/logs',
-      icon: Bot,
+      title: 'Dietary Logs',
+      url: '/dietary-logs',
+      icon: Logs,
     },
   ],
 }
@@ -36,8 +36,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { open } = useSidebar()
 
   return (
-    <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader className="flex items-center justify-center h-[80px]">
+    <Sidebar
+      collapsible="icon"
+      {...props}
+      className="pt-6 pb-4"
+      suppressHydrationWarning
+    >
+      <SidebarHeader className="flex items-center justify-center h-[80px] pb-8">
         <AnimatePresence mode="wait">
           {open ? (
             <motion.div
@@ -65,7 +70,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavMain items={data.navMain} />
       </SidebarContent>
-      <SidebarFooter className="flex items-center justify-center text-xs py-6">
+      <SidebarFooter className="pt-6">
         <AnimatePresence mode="wait">
           {open && (
             <motion.div
@@ -75,7 +80,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               exit={{ opacity: 0, y: 20 }}
               transition={{ duration: 0.2 }}
             >
-              <span className="text-nowrap">Copyright © 2025</span>
+              <div className="text-center">
+                <span className="text-nowrap text-xs">Copyright © 2025</span>
+                <br />
+                <span className="text-nowrap text-xs">Dev by Oshan</span>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

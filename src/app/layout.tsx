@@ -1,13 +1,14 @@
 import type { Metadata } from 'next'
-import { Roboto } from 'next/font/google'
+import { Open_Sans } from 'next/font/google'
 import './globals.css'
-import { ClerkProvider } from '@clerk/nextjs'
-import { ThemeProvider } from '@/components/theme/theme-provider'
+import { ErrorBoundary } from '@/components/error-boundary'
+import { RootProvider } from '@/providers/root-provider'
+import { Toaster } from '@/components/ui/toaster'
 
-const roboto = Roboto({
-  variable: '--font-roboto',
+const openSans = Open_Sans({
+  variable: '--font-open-sans',
   subsets: ['latin'],
-  weight: ['100', '300', '400', '500', '700'],
+  weight: ['300', '400', '500', '700'],
 })
 
 export const metadata: Metadata = {
@@ -21,19 +22,15 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <ClerkProvider>
-      <html lang="en" suppressHydrationWarning>
-        <body className={`${roboto.variable} antialiased`}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${openSans.variable} antialiased`}>
+        <RootProvider>
+          <ErrorBoundary>
             {children}
-          </ThemeProvider>
-        </body>
-      </html>
-    </ClerkProvider>
+            <Toaster />
+          </ErrorBoundary>
+        </RootProvider>
+      </body>
+    </html>
   )
 }

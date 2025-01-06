@@ -1,6 +1,6 @@
 import {
   pgTable,
-  serial,
+  uuid,
   text,
   timestamp,
   integer,
@@ -16,10 +16,10 @@ export const users = pgTable('users', {
   createdAt: timestamp('created_at').defaultNow(),
 })
 
-export const foodLogs = pgTable('food_logs', {
-  id: serial('id').primaryKey(),
+export const meals = pgTable('meals', {
+  id: uuid('id').defaultRandom().primaryKey(),
   userId: text('user_id').references(() => users.id),
-  foodName: text('food_name').notNull(),
+  mealName: text('meal_name').notNull(),
   calories: integer('calories').notNull(),
   protein: integer('protein'),
   carbs: integer('carbs'),

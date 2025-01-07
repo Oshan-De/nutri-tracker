@@ -174,7 +174,7 @@ export function AISuggestionsModal() {
         <Button
           size="lg"
           variant="outline"
-          className="flex gap-3 relative px-6 py-2 text-white border-2 border-primary rounded-xl mx-4"
+          className="flex gap-3 relative px-6 py-2 text-white dark:text-black border-2 border-primary rounded-xl mx-4"
         >
           <Sparkles className="stroke-primary" />
           Get Suggestions
